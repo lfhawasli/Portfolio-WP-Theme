@@ -391,47 +391,6 @@ add_shortcode('html5_shortcode_demo_2', 'html5_shortcode_demo_2'); // Place [htm
 // Shortcodes above would be nested like this -
 // [html5_shortcode_demo] [html5_shortcode_demo_2] Here's the page title! [/html5_shortcode_demo_2] [/html5_shortcode_demo]
 
-/*------------------------------------*\
-	Custom Post Types
-\*------------------------------------*/
-
-// Create 1 Custom Post type for a Demo, called HTML5-Blank
-function create_post_type_html5()
-{
-    register_taxonomy_for_object_type('category', 'html5-blank'); // Register Taxonomies for Category
-    register_taxonomy_for_object_type('post_tag', 'html5-blank');
-    register_post_type('html5-blank', // Register Custom Post Type
-        array(
-        'labels' => array(
-            'name' => __('HTML5 Blank Custom Post', 'html5blank'), // Rename these to suit
-            'singular_name' => __('HTML5 Blank Custom Post', 'html5blank'),
-            'add_new' => __('Add New', 'html5blank'),
-            'add_new_item' => __('Add New HTML5 Blank Custom Post', 'html5blank'),
-            'edit' => __('Edit', 'html5blank'),
-            'edit_item' => __('Edit HTML5 Blank Custom Post', 'html5blank'),
-            'new_item' => __('New HTML5 Blank Custom Post', 'html5blank'),
-            'view' => __('View HTML5 Blank Custom Post', 'html5blank'),
-            'view_item' => __('View HTML5 Blank Custom Post', 'html5blank'),
-            'search_items' => __('Search HTML5 Blank Custom Post', 'html5blank'),
-            'not_found' => __('No HTML5 Blank Custom Posts found', 'html5blank'),
-            'not_found_in_trash' => __('No HTML5 Blank Custom Posts found in Trash', 'html5blank')
-        ),
-        'public' => true,
-        'hierarchical' => true, // Allows your posts to behave like Hierarchy Pages
-        'has_archive' => true,
-        'supports' => array(
-            'title',
-            'editor',
-            'excerpt',
-            'thumbnail'
-        ), // Go to Dashboard Custom HTML5 Blank post for supports
-        'can_export' => true, // Allows export in Tools > Export
-        'taxonomies' => array(
-            'post_tag',
-            'category'
-        ) // Add Category and Post Tags support
-    ));
-}
 
 /*------------------------------------*\
 	ShortCode Functions
@@ -451,6 +410,9 @@ function html5_shortcode_demo_2($atts, $content = null) // Demo Heading H2 short
 
 
 
+/*------------------------------------*\
+    Custom Post Types
+\*------------------------------------*/
 
 /**
  * Registers the event post type.
@@ -473,8 +435,6 @@ function wpt_experince_post_type() {
     $supports = array(
         'title',
         'editor',
-        'thumbnail',
-        'comments',
         'revisions',
     );
 
@@ -491,18 +451,24 @@ function wpt_experince_post_type() {
     );
 
     register_post_type( 'experience', $args );
-
 }
+
 add_action( 'init', 'wpt_experince_post_type' );
+
+
+
+/*------------------------------------*\
+    Custom Meta Fields
+\*------------------------------------*/
 
 /**
  * Adds a metabox to the right side of the screen under the â€œPublishâ€ box
  */
 function wpt_experience_metaboxes() {
     add_meta_box(
-        'wpt_experience_location',
-        'Experience Location',
-        'wpt_experience_location',
+        'wpt_experience_job_title',
+        'Job Title',
+        'wpt_experience_job_title',
         'experience',
         'side',
         'default'
@@ -513,19 +479,65 @@ function wpt_experience_metaboxes() {
 /**
  * Output the HTML for the metabox.
  */
-function wpt_experience_location() {
+function wpt_experience_job_title() {
     global $post;
 
     // Nonce field to validate form request came from current site
     wp_nonce_field( basename( __FILE__ ), 'experience_fields' );
 
     // Get the location data if it's already been entered
-    $location = get_post_meta( $post->ID, 'location', true );
+    $location = get_post_meta( $post->ID, 'job_title', true );
 
     // Output the field
-    echo '<input type="text" name="location" value="' . esc_textarea( $location )  . '" class="widefat">';
+    echo '<input type="text" name="job_title" value="' . esc_textarea( $location )  . '" class="widefat">';
 
 }
 
+/**
+ * Save the metabox data
+ */
+function wpt_save_experience_meta( $post_id, $post ) {
+
+    // Return if the user doesn't have edit permissions.
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return $post_id;
+    }
+
+    // Verify this came from the our screen and with proper authorization,
+    // because save_post can be triggered at other times.
+    if ( ! isset( $_POST['job_title'] ) || ! wp_verify_nonce( $_POST['experience_fields'], basename(__FILE__) ) ) {
+        return $post_id;
+    }
+
+    // Now that we're authenticated, time to save the data.
+    // This sanitizes the data from the field and saves it into an array $events_meta.
+    $events_meta['job_title'] = esc_textarea( $_POST['job_title'] );
+
+    // Cycle through the $events_meta array.
+    // Note, in this example we just have one item, but this is helpful if you have multiple.
+    foreach ( $events_meta as $key => $value ) :
+
+        // Don't store custom data twice
+        if ( 'revision' === $post->post_type ) {
+            return;
+        }
+
+        if ( get_post_meta( $post_id, $key, false ) ) {
+            // If the custom field already has a value, update it.
+            update_post_meta( $post_id, $key, $value );
+        } else {
+            // If the custom field doesn't have a value, add it.
+            add_post_meta( $post_id, $key, $value);
+        }
+
+        if ( ! $value ) {
+            // Delete the meta key if there's no value
+            delete_post_meta( $post_id, $key );
+        }
+
+    endforeach;
+
+}
+add_action( 'save_post', 'wpt_save_experience_meta', 1, 2 );
 
 ?>
