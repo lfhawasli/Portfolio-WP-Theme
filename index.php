@@ -1,37 +1,6 @@
-<!DOCTYPE html>
-<!--[if lt IE 7 ]> <html class="ie ie6 no-js" lang="en"> <![endif]-->
-<!--[if IE 7 ]>    <html class="ie ie7 no-js" lang="en"> <![endif]-->
-<!--[if IE 8 ]>    <html class="ie ie8 no-js" lang="en"> <![endif]-->
-<!--[if IE 9 ]>    <html class="ie ie9 no-js" lang="en"> <![endif]-->
-<!--[if gt IE 9]><!-->
-<html class="no-js" lang="en">
-<!--<![endif]--><head>
-<meta charset="UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>Folix - Responsive Resume, Personal Portfolio Template</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!--main style-->
-<link rel="stylesheet" type="text/css" media="screen" href="<?php echo get_template_directory_uri(); ?>/css/bootstrap.css">
-<link rel="stylesheet" type="text/css" media="screen" href="<?php echo get_template_directory_uri(); ?>/css/style.css">
-<link href="css/perfect-scrollbar.css" rel="stylesheet">
-
-<!--google font style-->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300' rel='stylesheet' type='text/css'>
-<!--font-family: 'Open Sans', sans-serif;-->
-
-<!-- font css style-->
-<link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/css/font-awesome.css">
-
-<!--for slider style-->
-
-<noscript>
-<link rel="stylesheet" type="text/css" href="<?php echo get_template_directory_uri(); ?>/css/fallback.css" />
-</noscript>
-<!--[if lt IE 9]>
-        <link rel="stylesheet" type="text/css" href="css/fallback.css" />
-    <![endif]-->
-</head><body>
+<?php get_header(); ?>
+<body>
 
 <!--wrapper start-->
 <div class="wrapper" id="wrapper">
@@ -69,7 +38,14 @@
                   <a class="navbar-brand" href="#">Menu</a> </div>
                 <div class="navbar-collapse collapse">
                   <ul class="nav navbar-nav nav-justified">
-                    <li class="first menuItem homeLink active"><a href="#wrapper">Home</a></li><li class="menuItem"><a href="#aboutme">About</a></li><li class="menuItem"><a href="#technical">Skills</a></li><li class="menuItem"><a href="#exprience">Experience</a></li><li class="menuItem"><a href="#education">Education</a></li><li class="menuItem"><a href="#protfolio">Portfolio</a></li><li class="menuItem"><a href="#reffernces">Reffernces</a></li><li class="menuItem"><a href="#contact">Contact</a></li>
+                    <li class="first menuItem homeLink active"><a href="#wrapper">Home</a></li>
+                    <li class="menuItem"><a href="#aboutme">About</a></li>
+                    <li class="menuItem"><a href="#technical">Skills</a></li>
+                    <li class="menuItem"><a href="#exprience">Experience</a></li>
+                    <li class="menuItem"><a href="#education">Education</a></li>
+                    <li class="menuItem"><a href="#protfolio">Portfolio</a></li>
+                    <li class="menuItem"><a href="#reffernces">Reffernces</a></li>
+                    <li class="menuItem"><a href="#contact">Contact</a></li>
                   </ul>
                 </div>
               </div>
@@ -541,6 +517,6 @@ $( ".navbar-toggle" ).click(function() {
 </script>
 
 <!--contact form js--> 
-<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/jquery.contact.js"></script>
+<script type="text/javascript" src="js/jquery.contact.js"></script>
 </body>
 </html>

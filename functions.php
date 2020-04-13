@@ -449,4 +449,83 @@ function html5_shortcode_demo_2($atts, $content = null) // Demo Heading H2 short
     return '<h2>' . $content . '</h2>';
 }
 
+
+
+
+/**
+ * Registers the event post type.
+ */
+function wpt_experince_post_type() {
+
+    $labels = array(
+        'name'               => __( 'Experience' ),
+        'singular_name'      => __( 'Experience' ),
+        'add_new'            => __( 'Add New Experience' ),
+        'add_new_item'       => __( 'Add New Experience' ),
+        'edit_item'          => __( 'Edit Experience' ),
+        'new_item'           => __( 'Add New Experience' ),
+        'view_item'          => __( 'View Experience' ),
+        'search_items'       => __( 'Search Experience' ),
+        'not_found'          => __( 'No experience found' ),
+        'not_found_in_trash' => __( 'No experience found in trash' )
+    );
+
+    $supports = array(
+        'title',
+        'editor',
+        'thumbnail',
+        'comments',
+        'revisions',
+    );
+
+    $args = array(
+        'labels'               => $labels,
+        'supports'             => $supports,
+        'public'               => true,
+        'capability_type'      => 'post',
+        'rewrite'              => array( 'slug' => 'experience' ),
+        'has_archive'          => true,
+        'menu_position'        => 4,
+        'menu_icon'            => 'dashicons-businesswoman',
+        'register_meta_box_cb' => 'wpt_experience_metaboxes',
+    );
+
+    register_post_type( 'experience', $args );
+
+}
+add_action( 'init', 'wpt_experince_post_type' );
+
+/**
+ * Adds a metabox to the right side of the screen under the â€œPublishâ€ box
+ */
+function wpt_experience_metaboxes() {
+    add_meta_box(
+        'wpt_experience_location',
+        'Experience Location',
+        'wpt_experience_location',
+        'experience',
+        'side',
+        'default'
+    );
+}
+
+
+/**
+ * Output the HTML for the metabox.
+ */
+function wpt_experience_location() {
+    global $post;
+
+    // Nonce field to validate form request came from current site
+    wp_nonce_field( basename( __FILE__ ), 'experience_fields' );
+
+    // Get the location data if it's already been entered
+    $location = get_post_meta( $post->ID, 'location', true );
+
+    // Output the field
+    echo '<input type="text" name="location" value="' . esc_textarea( $location )  . '" class="widefat">';
+
+}
+
+
 ?>
