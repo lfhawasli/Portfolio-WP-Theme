@@ -134,58 +134,8 @@
   </section>
   <!--technical end--> 
   
-  <!--exprience start-->
-  <section class="exprience" id="exprience">
-    <div class="container">
-      <div class="heading">
-        <h2>Work Experience</h2>
-        <p>Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
-      </div>
-      <div class="row workDetails">
-        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
-          <div class="workYear"><span class="prevY">Mar,2011</span>
-            <span class="afterY">January 2011</span></div>
-        </div>
-        <div class="col-xs-12 col-sm-9 col-md-10 col-lg-10 rightArea">
-          <div class="arrowpart"></div>
-          <div class="exCon">
-            <h4>UIzards</h4>
-            <h5>Senior UX Designer</h5>
-            <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quom placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui faorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</p>
-          </div>
-        </div>
-      </div>
-      <div class="row workDetails">
-        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
-          <div class="workYear"><span class="prevY">Mar,2011</span>
-            <span class="afterY">January 2011</span></div>
-        </div>
-        <div class="col-xs-12 col-sm-9 col-md-10 col-lg-10 rightArea">
-          <div class="arrowpart"></div>
-          <div class="exCon">
-            <h4>Lexind</h4>
-            <h5>Visual / UI Designer</h5>
-            <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quom placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui faorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</p>
-          </div>
-        </div>
-      </div>
-      <div class="row workDetails">
-        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
-          <div class="workYear"><span class="prevY">Mar,2011</span>
-            <span class="afterY">January 2011</span></div>
-        </div>
-        <div class="col-xs-12 col-sm-9 col-md-10 col-lg-10 rightArea">
-          <div class="arrowpart"></div>
-          <div class="exCon">
-            <h4>Matrix Media</h4>
-            <h5>Visual / UI Designer</h5>
-            <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quom placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui faorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--exprience end--> 
+  <!--Work Experience-->
+  <?php load_template( TEMPLATEPATH . '/page_experience.php'); ?>
   
   <!--education start-->
   <section class="education" id="education">

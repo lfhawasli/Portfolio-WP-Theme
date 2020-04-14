@@ -470,8 +470,29 @@ function wpt_experience_metaboxes() {
         'Job Title',
         'wpt_experience_job_title',
         'experience',
+        'normal',
+        'high'
+    );
+
+
+    add_meta_box(
+        'wpt_experience_start_date',
+        'Start Date',
+        'wpt_experience_start_date',
+        'experience',
         'side',
-        'default'
+        'default',
+        array( 'id' => '_start')
+    );
+
+    add_meta_box(
+        'wpt_experience_end_date',
+        'End Date',
+        'wpt_experience_end_date',
+        'experience',
+        'side',
+        'default',
+        array('id'=>'_end') 
     );
 }
 
@@ -493,49 +514,113 @@ function wpt_experience_job_title() {
 
 }
 
+function wpt_experience_start_date($post, $args) {
+    wpt_experience_job_dates($post, $args);
+}
+
+function wpt_experience_end_date($post, $args) {
+    wpt_experience_job_dates($post, $args);
+
+    //checkbpx for current
+}
+
+
+function wpt_experience_job_dates($post, $args) {
+
+    $metabox_id = $args['args']['id'];
+    global $post, $wp_locale;
+  
+    // Use nonce for verification
+    wp_nonce_field( plugin_basename( __FILE__ ), 'ep_experienceposts_nonce' );
+  
+    $time_adj = current_time( 'timestamp' );
+    $month = get_post_meta( $post->ID, $metabox_id . '_month', true );
+  
+    if ( empty( $month ) ) {
+        $month = gmdate( 'm', $time_adj );
+    }
+  
+    $year = get_post_meta( $post->ID, $metabox_id . '_year', true );
+  
+    if ( empty( $year ) ) {
+        $year = gmdate( 'Y', $time_adj );
+    }
+
+  
+    $month_s = '<select name="' . $metabox_id . '_month">';
+    for ( $i = 1; $i < 13; $i = $i +1 ) {
+        $month_s .= "\t\t\t" . '<option value="' . zeroise( $i, 2 ) . '"';
+        if ( $i == $month )
+            $month_s .= ' selected="selected"';
+        $month_s .= '>' . $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) ) . "</option>\n";
+    }
+    $month_s .= '</select>';
+  
+    echo $month_s;
+    echo '<input type="text" name="' . $metabox_id . '_year" value="' . $year . '" size="4" maxlength="4" />';  
+
+}
+
+
 /**
  * Save the metabox data
  */
 function wpt_save_experience_meta( $post_id, $post ) {
 
-    // Return if the user doesn't have edit permissions.
-    if ( ! current_user_can( 'edit_post', $post_id ) ) {
-        return $post_id;
-    }
-
-    // Verify this came from the our screen and with proper authorization,
-    // because save_post can be triggered at other times.
-    if ( ! isset( $_POST['job_title'] ) || ! wp_verify_nonce( $_POST['experience_fields'], basename(__FILE__) ) ) {
-        return $post_id;
-    }
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+        return;
+  
+    if ( !isset( $_POST['ep_experienceposts_nonce'] ) )
+        return;
+  
+    if ( !wp_verify_nonce( $_POST['ep_experienceposts_nonce'], plugin_basename( __FILE__ ) ) )
+        return;
+  
+    // Is the user allowed to edit the post or page?
+    if ( !current_user_can( 'edit_post', $post->ID ) )
+        return;
 
     // Now that we're authenticated, time to save the data.
     // This sanitizes the data from the field and saves it into an array $events_meta.
     $events_meta['job_title'] = esc_textarea( $_POST['job_title'] );
+    //$events_meta['start_date'] = esc_textarea( $_POST['start_date'] );
+    //$events_meta['end_date'] = esc_textarea( $_POST['end_date'] );
+    $metabox_ids = array( '_start', '_end' );
+  
+    foreach ($metabox_ids as $key ) {
+        $events_meta[$key . '_month'] = $_POST[$key . '_month'];
+        $events_meta[$key . '_year'] = $_POST[$key . '_year'];
+        //$events_meta[$key . '_eventtimestamp'] = $events_meta[$key . '_year'] . $events_meta[$key . '_month'];
+    }
+
 
     // Cycle through the $events_meta array.
     // Note, in this example we just have one item, but this is helpful if you have multiple.
-    foreach ( $events_meta as $key => $value ) :
+    
+    foreach ( $events_meta as $key => $value ) {
 
         // Don't store custom data twice
         if ( 'revision' === $post->post_type ) {
             return;
         }
+        
+        // If $value is an array, make it a CSV (unlikely)
+        $value = implode( ',', (array)$value );
 
-        if ( get_post_meta( $post_id, $key, false ) ) {
+        if ( get_post_meta( $post->ID, $key, false ) ) {
             // If the custom field already has a value, update it.
-            update_post_meta( $post_id, $key, $value );
+            update_post_meta( $post->ID, $key, $value );
         } else {
             // If the custom field doesn't have a value, add it.
-            add_post_meta( $post_id, $key, $value);
+            add_post_meta( $post->ID, $key, $value);
         }
 
         if ( ! $value ) {
             // Delete the meta key if there's no value
-            delete_post_meta( $post_id, $key );
+            delete_post_meta( $post->ID, $key );
         }
 
-    endforeach;
+    }
 
 }
 add_action( 'save_post', 'wpt_save_experience_meta', 1, 2 );
