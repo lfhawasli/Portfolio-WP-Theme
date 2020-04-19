@@ -42,7 +42,7 @@ $page = get_page_by_title("Work Experience");
 		          	<div class="exCon" style="color:black;">
 			            <h4><?php  echo $exp->post_title; ?></h4>
 			            <h5><?php echo $exp_info["job_title"][0]; ?></h5>
-			            <p><?php echo $exp->post_content; ?></p>
+			            <div class='p'><?php echo $exp->post_content; ?></div>
 		          	</div>
 	        	</div>
 	      	</div>

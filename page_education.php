@@ -40,7 +40,7 @@ $page = get_page_by_title("Education");
 		          	<div class="exCon" style="color:black;">
 			            <h4><?php  echo $ed->post_title; ?></h4>
 			            <h5><?php echo $education_info["institution"][0]; ?></h5>
-			            <p><?php echo $ed->post_content; ?></p>
+			            <div class='p'><?php echo $ed->post_content; ?></div>
 		          	</div>
 	        	</div>
 	      	</div>

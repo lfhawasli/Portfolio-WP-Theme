@@ -67,7 +67,7 @@ a {
 .container .row {
 	margin:0px;
 }
-p {
+p, .p {
 	font-family: 'Open Sans', sans-serif;
 	font-size:15px;
 	line-height:27px;
@@ -672,7 +672,7 @@ header {
 	color:#5b4c5c;
 	margin-bottom:41px;
 }
-.exprience p {
+.exprience p, .exprience .p {
 	color:#84868d;
 	/*font-size:13px;*/
 	line-height:18px;
@@ -697,7 +697,8 @@ header {
 .workDetails:last-child .rightArea {
 	padding-bottom:0px;
 }
-.workDetails:last-child .rightArea .exCon p:last-child{
+.workDetails:last-child .rightArea .exCon p:last-child, 
+.workDetails:last-child .rightArea .exCon .p:last-child{
 	padding-bottom:0;
 }
 
@@ -737,10 +738,14 @@ header {
 	margin-left:15px;
 	text-align:left;
 }
-.exCon p {
+.exCon p, .exCon .p {
 	color:#897f8a;
 	line-height:27px;
 }
+.exCon .p ul{
+	margin-left: 40px !important;
+}
+
 .exCon h4 {
 	color:#5b4c5c;
 	padding-bottom:1px;
@@ -764,7 +769,7 @@ header {
 	color:#5b4c5c;
 	margin-bottom:45px;
 }
-.education p {
+.education p, .education .p {
 	color:#897f8a;
 	/*font-size:13px;*/
 	line-height:27px;

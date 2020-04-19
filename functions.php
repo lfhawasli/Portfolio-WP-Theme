@@ -489,8 +489,45 @@ function wpt_education_post_type() {
     register_post_type( 'education', $args );
 }
 
+function wpt_portfolio_post_type() {
+
+    $labels = array(
+        'name'               => __( 'Portfolio' ),
+        'singular_name'      => __( 'Portfolio' ),
+        'add_new'            => __( 'Add New Portfolio' ),
+        'add_new_item'       => __( 'Add New Portfolio' ),
+        'edit_item'          => __( 'Edit Portfolio' ),
+        'new_item'           => __( 'Add New Portfolio' ),
+        'view_item'          => __( 'View Portfolio' ),
+        'search_items'       => __( 'Search Portfolio' ),
+        'not_found'          => __( 'No portfolio found' ),
+        'not_found_in_trash' => __( 'No portfolio found in trash' )
+    );
+
+    $supports = array(
+        'title',
+        'editor',
+        'revisions',
+    );
+
+    $args = array(
+        'labels'               => $labels,
+        'supports'             => $supports,
+        'public'               => true,
+        'capability_type'      => 'post',
+        'rewrite'              => array( 'slug' => 'portfolio' ),
+        'has_archive'          => true,
+        'menu_position'        => 4,
+        'menu_icon'            => 'dashicons-admin-customizer',
+        'register_meta_box_cb' => 'wpt_portfolio_metaboxes',
+    );
+
+    register_post_type( 'portfolio', $args );
+}
+
 add_action( 'init', 'wpt_experince_post_type' );
 add_action( 'init', 'wpt_education_post_type' );
+add_action( 'init', 'wpt_portfolio_post_type' );
 
 
 /*------------------------------------*\
@@ -754,5 +791,42 @@ function wpt_save_education_meta( $post_id, $post ) {
 
 }
 add_action( 'save_post', 'wpt_save_education_meta', 1, 2 );
+
+
+
+
+
+function edit_admin_menus() {
+    global $menu;
+
+    //Rename existing admin menu items
+    $menu[20][0] = 'Sections'; // Pages to Sections
+
+    // Move pages to top of menu
+    $editkeys[] = array();
+
+    foreach ( $menu as $key => $value ) {
+        if ( 'edit.php?post_type=page' == $value[2] ) {  //page aka sections
+            $editkeys[] = array(
+                            "old" => $key,
+                            "new" => 2, // use whatever index gets you the position you want
+                        );
+        }
+
+        //remove posts from admin menu
+        if ( 'edit.php' == $value[2] ) {  
+            $menu[$key]=array();
+        }
+
+    }
+
+    // if this key is in use you will write over a menu item!
+    foreach ($editkeys as $key => $keyType){
+        $menu[$keyType["new"]]=$menu[$keyType["old"]];
+        $menu[$keyType["old"]]=array();
+    }
+    
+}
+add_action( 'admin_menu', 'edit_admin_menus' );
 
 ?>
