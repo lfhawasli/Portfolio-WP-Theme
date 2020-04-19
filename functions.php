@@ -453,8 +453,44 @@ function wpt_experince_post_type() {
     register_post_type( 'experience', $args );
 }
 
-add_action( 'init', 'wpt_experince_post_type' );
+function wpt_education_post_type() {
 
+    $labels = array(
+        'name'               => __( 'Education' ),
+        'singular_name'      => __( 'Education' ),
+        'add_new'            => __( 'Add New Education' ),
+        'add_new_item'       => __( 'Add New Education' ),
+        'edit_item'          => __( 'Edit Education' ),
+        'new_item'           => __( 'Add New Education' ),
+        'view_item'          => __( 'View Education' ),
+        'search_items'       => __( 'Search Education' ),
+        'not_found'          => __( 'No education found' ),
+        'not_found_in_trash' => __( 'No education found in trash' )
+    );
+
+    $supports = array(
+        'title',
+        'editor',
+        'revisions',
+    );
+
+    $args = array(
+        'labels'               => $labels,
+        'supports'             => $supports,
+        'public'               => true,
+        'capability_type'      => 'post',
+        'rewrite'              => array( 'slug' => 'education' ),
+        'has_archive'          => true,
+        'menu_position'        => 4,
+        'menu_icon'            => 'dashicons-welcome-learn-more',
+        'register_meta_box_cb' => 'wpt_education_metaboxes',
+    );
+
+    register_post_type( 'education', $args );
+}
+
+add_action( 'init', 'wpt_experince_post_type' );
+add_action( 'init', 'wpt_education_post_type' );
 
 
 /*------------------------------------*\
@@ -470,8 +506,8 @@ function wpt_experience_metaboxes() {
         'Job Title',
         'wpt_experience_job_title',
         'experience',
-        'normal',
-        'high'
+        'side',
+        'default'
     );
 
 
@@ -496,6 +532,27 @@ function wpt_experience_metaboxes() {
     );
 }
 
+function wpt_education_metaboxes() {
+    add_meta_box(
+        'wpt_education_institution',
+        'Institution',
+        'wpt_education_institution',
+        'education',
+        'side',
+        'default'
+    );
+
+    add_meta_box(
+        'wpt_education_date',
+        'Date Received',
+        'wpt_education_date',
+        'education',
+        'side',
+        'default',
+        array('id'=>'received')
+    );
+}
+
 
 /**
  * Output the HTML for the metabox.
@@ -506,7 +563,7 @@ function wpt_experience_job_title() {
     // Nonce field to validate form request came from current site
     wp_nonce_field( basename( __FILE__ ), 'experience_fields' );
 
-    // Get the location data if it's already been entered
+    // Get the data if it's already been entered
     $location = get_post_meta( $post->ID, 'job_title', true );
 
     // Output the field
@@ -515,23 +572,41 @@ function wpt_experience_job_title() {
 }
 
 function wpt_experience_start_date($post, $args) {
-    wpt_experience_job_dates($post, $args);
+    wpt_date_fields($post, $args);
 }
 
 function wpt_experience_end_date($post, $args) {
-    wpt_experience_job_dates($post, $args);
+    wpt_date_fields($post, $args);
 
-    //checkbpx for current
+    //checkbox for current
+}
+
+function wpt_education_institution() {
+    global $post;
+
+    // Nonce field to validate form request came from current site
+    wp_nonce_field( basename( __FILE__ ), 'education_fields' );
+
+    // Get the data if it's already been entered
+    $location = get_post_meta( $post->ID, 'institution', true );
+
+    // Output the field
+    echo '<input type="text" name="institution" value="' . esc_textarea( $location )  . '" class="widefat">';
+
+}
+
+function wpt_education_date($post, $args) {
+    wpt_date_fields($post, $args);
 }
 
 
-function wpt_experience_job_dates($post, $args) {
+function wpt_date_fields($post, $args) {
 
     $metabox_id = $args['args']['id'];
     global $post, $wp_locale;
   
     // Use nonce for verification
-    wp_nonce_field( plugin_basename( __FILE__ ), 'ep_experienceposts_nonce' );
+    wp_nonce_field( plugin_basename( __FILE__ ), 'ep_'.$post->post_type.'posts_nonce' );
   
     $time_adj = current_time( 'timestamp' );
     $month = get_post_meta( $post->ID, $metabox_id . '_month', true );
@@ -624,5 +699,60 @@ function wpt_save_experience_meta( $post_id, $post ) {
 
 }
 add_action( 'save_post', 'wpt_save_experience_meta', 1, 2 );
+
+
+function wpt_save_education_meta( $post_id, $post ) {
+
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+        return;
+  
+    if ( !isset( $_POST['ep_educationposts_nonce'] ) )
+        return;
+  
+    if ( !wp_verify_nonce( $_POST['ep_educationposts_nonce'], plugin_basename( __FILE__ ) ) )
+        return;
+  
+    // Is the user allowed to edit the post or page?
+    if ( !current_user_can( 'edit_post', $post->ID ) )
+        return;
+
+    // Now that we're authenticated, time to save the data.
+    // This sanitizes the data from the field and saves it into an array $events_meta.
+    $events_meta['institution'] = esc_textarea( $_POST['institution'] );
+    $events_meta['received_month'] = esc_textarea( $_POST['received_month']);
+    $events_meta['received_year'] = esc_textarea( $_POST['received_year']);
+
+
+
+    // Cycle through the $events_meta array.
+    // Note, in this example we just have one item, but this is helpful if you have multiple.
+    
+    foreach ( $events_meta as $key => $value ) {
+
+        // Don't store custom data twice
+        if ( 'revision' === $post->post_type ) {
+            return;
+        }
+        
+        // If $value is an array, make it a CSV (unlikely)
+        $value = implode( ',', (array)$value );
+
+        if ( get_post_meta( $post->ID, $key, false ) ) {
+            // If the custom field already has a value, update it.
+            update_post_meta( $post->ID, $key, $value );
+        } else {
+            // If the custom field doesn't have a value, add it.
+            add_post_meta( $post->ID, $key, $value);
+        }
+
+        if ( ! $value ) {
+            // Delete the meta key if there's no value
+            delete_post_meta( $post->ID, $key );
+        }
+
+    }
+
+}
+add_action( 'save_post', 'wpt_save_education_meta', 1, 2 );
 
 ?>
