@@ -616,6 +616,12 @@ function wpt_experience_end_date($post, $args) {
     wpt_date_fields($post, $args);
 
     //checkbox for current
+    $current = get_post_meta( $post->ID, '_job_current', true );
+    echo '&nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;';
+    echo '<input type="checkbox" value="1" ';
+    checked($current, true, true);
+    echo ' name="_job_current" /> Current';
+
 }
 
 function wpt_education_institution() {
@@ -695,8 +701,7 @@ function wpt_save_experience_meta( $post_id, $post ) {
     // Now that we're authenticated, time to save the data.
     // This sanitizes the data from the field and saves it into an array $events_meta.
     $events_meta['job_title'] = esc_textarea( $_POST['job_title'] );
-    //$events_meta['start_date'] = esc_textarea( $_POST['start_date'] );
-    //$events_meta['end_date'] = esc_textarea( $_POST['end_date'] );
+    $events_meta['_job_current'] = esc_textarea( $_POST['_job_current'] );
     $metabox_ids = array( '_start', '_end' );
   
     foreach ($metabox_ids as $key ) {

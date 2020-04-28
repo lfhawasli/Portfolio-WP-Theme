@@ -27,7 +27,12 @@ $page = get_page_by_title("Work Experience");
 
             $exp_info = get_post_meta( $exp->ID, '', true);
             $startDate = date('F, Y', mktime(0, 0, 0, $exp_info["_start_month"][0], 1, $exp_info["_start_year"][0]));
-            $endDate   = date('F, Y', mktime(0, 0, 0, $exp_info["_end_month"][0], 1, $exp_info["_end_year"][0])); 
+
+            if($exp_info["_job_current"][0] == 1){
+            	$endDate = 'Current';
+            } else {
+            	$endDate   = date('F, Y', mktime(0, 0, 0, $exp_info["_end_month"][0], 1, $exp_info["_end_year"][0])); 
+            }
 
 		    ?>
 	      	<div class="row workDetails">

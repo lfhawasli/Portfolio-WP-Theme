@@ -17,8 +17,8 @@
         </div>
         <!--header text start-->
         <div class="bannerText container">
-            <h1>I'm Angelica Doe</h1>
-            <p>Create awesome websites that make a difference in your business.</p>
+            <h1><?php echo get_bloginfo( 'name' ); ?></h1>
+            <p><?php bloginfo( 'description' ); ?></p>
             <a href="#technical" class="mbnt">What I do</a>
         </div>
     <!--header text end-->
