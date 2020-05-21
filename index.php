@@ -6,34 +6,13 @@
 <div class="wrapper" id="wrapper">
     <?php 
 
-  //Work Experience
-  load_template( TEMPLATEPATH . '/page_header.php'); ?>
-  
-  <!--about me start-->
-  <section class="aboutme" id="aboutme">
-    <div class="">
-      
-      <div class="row">
-      <div class=" col-xs-12 col-sm-12 col-md-5 col-lg-5 proPic"> <img src="img/me-back.jpg" alt="" class="img-responsive"> </div>
-        <div class=" col-xs-12 col-sm-12 col-md-6 col-lg-5 aboutCont">
-        	<div class="heading clearfix">
-                <h2>About me</h2>
-              </div>
-        
-          <h3>Angelica Doe</h3>
-          <h4 class="subHeading">Webdesigner &amp; Web Developer from Melbourne</h4>
-          
-          <div id="description">
-          <p>Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac duiQuisque sit amet fermentum elit eget tincidunt</p> 
+  // Header
+  load_template( TEMPLATEPATH . '/page_header.php'); 
 
-<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit Aenean ultricies mi vitae placerat eleifend leo. </p>
-			</div>
-          <a href="#" class="bntDownload">Download Printable Resume</a> </div>
-        
-      </div>
-    </div>
-  </section>
-  <!--about me end--> 
+  // About Me
+  load_template( TEMPLATEPATH . '/page_about_me.php'); ?>
+  
+  
   
   <!--technical start-->
   <section class="technical" id="technical">

@@ -512,6 +512,7 @@ header {
 #description .ps-scrollbar-x-rail{
 	display:none !important;
 }
+/*
 .aboutme .proPic:after{
 	position:absolute;
 	content:'';
@@ -524,7 +525,7 @@ header {
 	min-height: 100%;
 	min-width: 100%;
 	background-size: cover;
-}
+}*/
 .bntDownload {
 	font-size:18px;
 	font-family: 'Open Sans', sans-serif;

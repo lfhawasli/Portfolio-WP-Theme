@@ -1,17 +1,19 @@
 <?php 
 /* Template Name: Header */
 
-//$page = get_page_by_title("Header");
+$page = get_page_by_title("Header");
+
+$post_thumbnail= get_the_post_thumbnail_url( $page->ID );
+
 ?>
 <header> 
 
     <!--banner start-->
-
     <div class="banner row" id="banner">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 noPadd" style="height:100%">
         <!--background slide show start-->
             <div class="">
-                <img src="http://placehold.it/1920x1080&text=image" alt="bannerImg">
+                <img src="<?php echo $post_thumbnail; ?>" alt="bannerImg">
             </div>
         <!--background slide show end-->
         </div>
