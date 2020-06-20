@@ -590,6 +590,22 @@ function wpt_education_metaboxes() {
     );
 }
 
+function wpt_section_about_me_metaboxes() {
+    global $post;
+    if(!empty($post)) {
+
+        if( 'page_about_me.php' == get_page_template_slug( $post->ID )) {
+            add_meta_box( 
+                'wpt_section_about_me_resume', 
+                'Resume', 
+                'wpt_section_about_me_resume', 
+                'page', 
+                'side', 
+                'default');
+        }
+    }
+}
+add_action( 'add_meta_boxes_page', 'wpt_section_about_me_metaboxes' );
 
 /**
  * Output the HTML for the metabox.
@@ -676,6 +692,18 @@ function wpt_date_fields($post, $args) {
   
     echo $month_s;
     echo '<input type="text" name="' . $metabox_id . '_year" value="' . $year . '" size="4" maxlength="4" />';  
+}
+
+function wpt_section_about_me_resume() {
+
+    wp_nonce_field(plugin_basename(__FILE__), 'wp_about_me_resume_nonce');
+     
+    $html = '<p class="description">';
+        $html .= 'Upload your PDF here.';
+    $html .= '</p>';
+    $html .= '<input type="file" id="wp_about_me_resume" name="wp_about_me_resume" value="" size="100" />';
+     
+    echo $html;
 
 }
 
@@ -797,7 +825,60 @@ function wpt_save_education_meta( $post_id, $post ) {
 }
 add_action( 'save_post', 'wpt_save_education_meta', 1, 2 );
 
+function wpt_save_about_me_resume($id) {
 
+    /* --- security verification --- */
+    if(!wp_verify_nonce($_POST['wp_about_me_resume_nonce'], plugin_basename(__FILE__))) {
+      return $id;
+    } // end if
+       
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+      return $id;
+    } // end if
+       
+    if('page' == $_POST['post_type']) {
+      if(!current_user_can('edit_page', $id)) {
+        return $id;
+      } // end if
+    } else {
+        if(!current_user_can('edit_page', $id)) {
+            return $id;
+        } // end if
+    } // end if
+    /* - end security verification - */
+     
+
+  wp_die(var_dump($_FILES));
+    // Make sure the file array isn't empty
+    if(!empty($_FILES['wp_about_me_resume']['name'])) {
+         
+        // Setup the array of supported file types. In this case, it's just PDF.
+        $supported_types = array('application/pdf');
+         
+        // Get the file type of the upload
+        $arr_file_type = wp_check_filetype(basename($_FILES['wp_about_me_resume']['name']));
+        $uploaded_type = $arr_file_type['type'];
+         
+        // Check if the type is supported. If not, throw an error.
+        if(in_array($uploaded_type, $supported_types)) {
+ 
+            // Use the WordPress API to upload the file
+            $upload = wp_upload_bits($_FILES['wp_about_me_resume']['name'], null, file_get_contents($_FILES['wp_about_me_resume']['tmp_name']));
+     
+            if(isset($upload['error']) && $upload['error'] != 0) {
+                wp_die('There was an error uploading your file. The error is: ' . $upload['error']);
+            } else {
+                add_post_meta($id, 'wp_about_me_resume', $upload);
+                update_post_meta($id, 'wp_about_me_resume', $upload);     
+            } // end if/else
+ 
+        } else {
+            wp_die("The file type that you've uploaded is not a PDF.");
+        } // end if/else
+         
+    } // end if
+} // end save_custom_meta_data
+add_action('save_post', 'wpt_save_about_me_resume');
 
 
 
